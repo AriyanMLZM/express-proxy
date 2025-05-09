@@ -36,7 +36,7 @@ app.all('/proxy', async (req: Request, res: Response) => {
 })
 
 app.get('/', (req: Request, res: Response) => {
-	res.send('Image Proxy is running 🚀')
+	res.send('Proxy is running 🚀')
 })
 
 app.listen(PORT, () => {
