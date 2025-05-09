@@ -4,39 +4,39 @@ import axios from 'axios'
 const app = express()
 
 // Proxy endpoint
-app.get('/proxy', async (req: Request, res: Response) => {
-	const { url } = req.query
+app.all('/proxy', async (req: Request, res: Response) => {
+	const targetUrl = req.query.url
 
-	if (!url) {
-		res.status(400).send('URL parameter is required')
+	if (!targetUrl) {
+		res.status(400).send('url parameter is required')
 		return
 	}
 
 	try {
-		const response = await axios.get(url as string, {
+		const response = await axios({
+			method: req.method,
+			url: targetUrl as string,
+			data: req.body,
 			responseType: 'arraybuffer',
 		})
 
-		// Forward headers (optional)
+		// set header
 		const contentType = response.headers['content-type']
 		if (contentType) {
 			res.setHeader('Content-Type', contentType)
 		}
 
+		// send data
 		res.status(200).send(response.data)
 	} catch (error) {
 		console.error('Proxy error:', error)
-		res.status(500).send('Failed to fetch image')
+		res.status(500).send('Failed to fetch data')
 	}
 })
 
-// Health check
 app.get('/', (req: Request, res: Response) => {
 	res.send('Image Proxy is running 🚀')
 })
-
-// Export for Vercel
-export default app
 
 // Local server (only for development)
 if (process.env.NODE_ENV !== 'production') {
@@ -45,3 +45,6 @@ if (process.env.NODE_ENV !== 'production') {
 		console.log(`Server running on http://localhost:${PORT}`)
 	})
 }
+
+// Export for Vercel
+export default app
