@@ -1,7 +1,6 @@
 import express, { Request, Response } from 'express'
 import axios from 'axios'
 
-const PORT = process.env.PORT || 4000
 const app = express()
 
 // Proxy endpoint
@@ -39,6 +38,13 @@ app.get('/', (req: Request, res: Response) => {
 	res.send('Proxy is running 🚀')
 })
 
-app.listen(PORT, () => {
-	console.log(`Server running on Port ${PORT}`)
-})
+// Local server (only for development)
+if (process.env.NODE_ENV !== 'production') {
+	const PORT = process.env.PORT || 4000
+	app.listen(PORT, () => {
+		console.log(`Server running on http://localhost:${PORT}`)
+	})
+}
+
+// Export for Vercel
+export default app
