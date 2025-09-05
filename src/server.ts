@@ -3,9 +3,8 @@ import axios from 'axios'
 
 const app = express()
 
-// Proxy endpoint
 app.all('/proxy', async (req: Request, res: Response) => {
-	const targetUrl = req.query.url
+	const targetUrl = req.query.url as string
 
 	if (!targetUrl) {
 		res.status(400).send('url parameter is required')
@@ -15,7 +14,7 @@ app.all('/proxy', async (req: Request, res: Response) => {
 	try {
 		const response = await axios({
 			method: req.method,
-			url: targetUrl as string,
+			url: targetUrl,
 			data: req.body,
 			responseType: 'arraybuffer',
 		})
@@ -34,15 +33,15 @@ app.all('/proxy', async (req: Request, res: Response) => {
 	}
 })
 
-app.get('/', (req: Request, res: Response) => {
+app.get('/', (_, res: Response) => {
 	res.send('Proxy is running 🚀')
 })
 
 // Local server (only for development)
 if (process.env.NODE_ENV !== 'production') {
-	const PORT = process.env.PORT || 4000
+	const PORT = 4000
 	app.listen(PORT, () => {
-		console.log(`Server running on http://localhost:${PORT}`)
+		console.log(`Server running on Port ${PORT}`)
 	})
 }
 
