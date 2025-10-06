@@ -1,7 +1,10 @@
 import express, { Request, Response } from 'express'
 import axios from 'axios'
+import cors from 'cors'
 
 const app = express()
+
+app.use(cors())
 
 app.all('/proxy', async (req: Request, res: Response) => {
 	const targetUrl = req.query.url as string
